@@ -1,56 +1,51 @@
 #!/usr/bin/python3
-"""Starts Flask web app
-Routes:
-    / - display "Hello HBNB!"
-    /hbnb - display "HBNB"
-    /c/<text> - display "C <text>"
-    /python/<text> - display "Python is cool"
-    /number/<n> - display n if integer
-    /number_template/<n> - display a HTML page if n is int
 """
-from flask import Flask, render_template
-
+starts a Flask web application
+"""
+from flask import Flask, escape, render_template
 app = Flask(__name__)
 
 
-@app.route('/', strict_slashes=False)
-def hbnb_route():
-    """prints Hello HBNB"""
+@app.route("/", strict_slashes=False)
+def hello_Hbnb():
+    """Return a string at the root route"""
     return "Hello HBNB!"
 
 
-@app.route('/hbnb', strict_slashes=False)
+@app.route("/hbnb", strict_slashes=False)
 def hbnb():
-    """prints HBNB"""
+    """Return a string at the /hbnb route"""
     return "HBNB"
 
 
-@app.route('/c/<string:text>', strict_slashes=False)
-def c_text(text):
-    """prints C followed by <text> content"""
-    text = text.replace("_", " ")
-    return "C %s" % text
+@app.route("/c/<text>", strict_slashes=False)
+def message(text):
+    """Return a string at the /c/<text> route"""
+    new_str = text.replace('_', ' ')
+    return "C %s" % escape(new_str)
 
 
-@app.route('/python', strict_slashes=False)
-@app.route('/python/<string:text>', strict_slashes=False)
-def python_text(text="is cool"):
-    """prints Python is cool"""
-    text = text.replace("_", " ")
-    return "Python %s" % text
+@app.route("/python", strict_slashes=False)
+@app.route("/python/<text>")
+def pythoniscool(text="is cool"):
+    """Retun string at the /python route with default
+    string "is cool" or at the /python/<text> route
+    """
+    new = text.replace('_', ' ')
+    return "Python %s" % escape(new)
 
 
-@app.route('/number/<int:n>', strict_slashes=False)
-def number_n(n):
-    """displays n if integer"""
-    return "%i is a number" % n
+@app.route("/number/<int:n>")
+def integernumber(n):
+    """Return string at /number/<int:n> route"""
+    return "%d is a number" % n
 
 
-@app.route('/number_template/<int:n>', strict_slashes=False)
-def number_template(n):
-    """display a HTML page if n is int"""
-    return render_template('5-number.html', n=n)
+@app.route("/number_template/<int:n>")
+def numbertemplate(n):
+    """Return string at /number_template/<int:n> route"""
+    return render_template("5-number.html", number=n)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0')

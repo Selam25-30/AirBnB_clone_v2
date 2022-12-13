@@ -1,29 +1,22 @@
 #!/usr/bin/python3
-"""Starts a Flask web application.
-The application listens on 0.0.0.0, port 5000.
-Routes:
-    /hbnb_filters: HBnB HTML filters page.
+"""
+script starts Flask web app
 """
 from models import storage
-from flask import Flask
-from flask import render_template
-
+from flask import Flask, render_template
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
-@app.route("/hbnb_filters", strict_slashes=False)
-def hbnb_filters():
-    """Displays the main HBnB filters HTML page."""
-    states = storage.all("State")
-    amenities = storage.all("Amenity")
-    return render_template("10-hbnb_filters.html",
-                           states=states, amenities=amenities)
-
-
-@app.teardown_appcontext
-def teardown(exc):
-    """Remove the current SQLAlchemy session."""
-    storage.close()
+@app.route('/hbnb_filters')
+def html_filters():
+    """display html page with working city/state filters & amenities
+       runs with web static css files
+    """
+    state_objs = [s for s in storage.all("State").values()]
+    amenity_objs = [a for a in storage.all("Amenity").values()]
+    return render_template('10-hbnb_filters.html',
+                           state_objs=state_objs, amenity_objs=amenity_objs)
 
 
 if __name__ == "__main__":
